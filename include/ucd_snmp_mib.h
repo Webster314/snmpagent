@@ -2,7 +2,6 @@
 #define _ucd_snmp_mib_h_
 
 #include <libagent.h>
-#include <ext2fs/ext2fs.h>
 #include <sys/vfs.h>
 #include <agent_pp/mib.h>
 #include <agent_pp/snmp_textual_conventions.h>
