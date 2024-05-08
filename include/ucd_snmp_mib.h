@@ -33,7 +33,7 @@
 #define oidMemBuffer            "1.3.6.1.4.1.2021.4.14.0"
 #define oidMemCached            "1.3.6.1.4.1.2021.4.15.0"
 
-typedef unsigned int Cputimetype; 
+typedef unsigned int Cputimetype;
 #define offUserTime             0
 #define offNiceTime             1
 #define offSystemTime           2
@@ -46,6 +46,8 @@ typedef unsigned int Cputimetype;
 #define offGuestNiceTime        9
 
 // Columns
+#define oidLaIndex              "1.3.6.1.4.1.2021.10.1.1"
+#define colLaIndex              "1"
 #define oidLaName               "1.3.6.1.4.1.2021.10.1.2"
 #define colLaName               "2"
 #define oidLaLoad               "1.3.6.1.4.1.2021.10.1.3"
@@ -60,9 +62,11 @@ typedef unsigned int Cputimetype;
 // Tables
 #define oidLaTable              "1.3.6.1.4.1.2021.10"
 #define oidLaEntry              "1.3.6.1.4.1.2021.10.1"
-#define nLaName                 0                
+#define nLaIndex                0
+#define cLaIndex                1
+#define nLaName                 1                
 #define cLaName                 2
-#define nLaLoad                 1              
+#define nLaLoad                 2              
 #define cLaLoad                 3
 
 #define oidDskTable             "1.3.6.1.4.1.2021.9"
@@ -126,6 +130,18 @@ private:
 
 // laTable
 
+// laIndex
+class AGENTPP_DECL laIndex: public SnmpDisplayString{
+public:
+    laIndex(const Oidx &);
+    virtual ~laIndex() { };
+    virtual MibEntry* clone(){
+        MibEntry * other = new laIndex(oid);
+        ((laIndex*)other)->replace_value(value->clone());
+        ((laIndex*)other)->set_reference_to_table(my_table);
+        return other;
+    }   
+};
 // laName 
 class AGENTPP_DECL laName: public SnmpDisplayString{
 public:
