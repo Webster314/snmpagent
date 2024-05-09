@@ -29,7 +29,6 @@ long diskIOReads::get_disk_io_reads(){
         LOG(errno);
         LOG(strerror(errno));
         LOG_END;
-        fclose(fp);
         return 0;
     }
     long rd;
@@ -40,6 +39,7 @@ long diskIOReads::get_disk_io_reads(){
     }
     rd = atol(value);
     fclose(fp);
+    fp = NULL;
     return rd;
 }
 
@@ -65,7 +65,6 @@ long diskIOWrites::get_disk_io_writes(){
         LOG(errno);
         LOG(strerror(errno));
         LOG_END;
-        fclose(fp);
         return 0;
     }
     long wr;
@@ -76,6 +75,7 @@ long diskIOWrites::get_disk_io_writes(){
     }
     wr = atol(value);
     fclose(fp);
+    fp = NULL;
     return wr;
 }
 

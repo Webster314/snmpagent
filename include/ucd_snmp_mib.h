@@ -131,7 +131,7 @@ private:
 // laTable
 
 // laIndex
-class AGENTPP_DECL laIndex: public SnmpDisplayString{
+class AGENTPP_DECL laIndex: public MibLeaf{
 public:
     laIndex(const Oidx &);
     virtual ~laIndex() { };
@@ -186,7 +186,7 @@ public:
         laEntry * entry = (laEntry*)mib->get(oid);
         return (entry) ? entry : instance;
     }
-    void set_row(MibTableRow * r, const OctetStr & name, const OctetStr & load);
+    void set_row(MibTableRow * r, const SnmpInt32 & index, const OctetStr & name, const OctetStr & load);
     MibTableRow * add_entry(const OctetStr & ind, const OctetStr & name, const OctetStr & load);
 };
 

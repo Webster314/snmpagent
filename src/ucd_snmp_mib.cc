@@ -38,6 +38,8 @@ long ssRawInterrupts::get_interrupt(){
             }
         }
     }   
+    fclose(fp);
+    fp = NULL;
     return intr;
 }
 
@@ -72,6 +74,8 @@ long ssRawContexts::get_context_switch(){
             }
         }
     }   
+    fclose(fp);
+    fp = NULL;
     return ctxt;
 }
 
@@ -99,6 +103,8 @@ long cpuTime::get_cpu_time(){
         value = strtok(NULL, " \n");
     }
     cpu_time = atol(value);
+    fclose(fp);
+    fp = NULL;
     return cpu_time;
 }
 
@@ -124,8 +130,6 @@ long memInfo::get_mem_info(){
         LOG(errno);
         LOG(strerror(errno));
         LOG_END;
-        fclose(fp);
-        return 0;
     }
     long mem_info;
     while (fgets(line, sizeof(line), fp)) {
@@ -137,6 +141,7 @@ long memInfo::get_mem_info(){
         }
     }
     fclose(fp);
+    fp = NULL;
     return mem_info;    // KiB
 } 
 
@@ -180,6 +185,10 @@ void memTotalReal::get_request(Request * req, int ind){
 }
 
 // laLoadTable
+// laIndex
+laIndex::laIndex(const Oidx & o): MibLeaf(o, READONLY,  new SnmpInt32()){
+
+}
 // laName
 laName::laName(const Oidx & o): SnmpDisplayString(o, READONLY, new OctetStr()){
 
@@ -217,7 +226,7 @@ void laLoad::get_request(Request * req, int ind){
 
 OctetStr laLoad::get_laLoad(){
     FILE * fp;
-    char * value;
+    char * value = "";
     char line[128];
     fp = fopen("/proc/loadavg", "r");
     if(fp == NULL){
@@ -226,8 +235,6 @@ OctetStr laLoad::get_laLoad(){
         LOG(errno);
         LOG(strerror(errno));
         LOG_END;
-        fclose(fp);
-        return "";
     }
     fgets(line, sizeof(line), fp);
     switch(minute){
@@ -240,6 +247,7 @@ OctetStr laLoad::get_laLoad(){
     }
     // std::cout << OctetStr(value).get_printable();
     fclose(fp);
+    fp = NULL;
     return OctetStr(value);
 }
 
@@ -254,23 +262,25 @@ const index_info indLaEntry[1] = {
 
 laEntry::laEntry() : MibTable(oidLaEntry, indLaEntry, 1) {
     instance = this;
+    add_col(new laIndex(colLaIndex));
     add_col(new laName(colLaName));
     add_col(new laLoad(colLaLoad));
     MibTableRow * la1 = add_row("1");
-    set_row(la1, "Load-1", "0");
+    set_row(la1, 1, "Load-1", "0");
     MibTableRow * la5 = add_row("2");
-    set_row(la5, "Load-5", "0");
+    set_row(la5, 2, "Load-5", "0");
     MibTableRow * la15 = add_row("3");
-    set_row(la15, "Load-15", "0");
+    set_row(la15, 3, "Load-15", "0");
 }
 
 laEntry::~laEntry(){
     instance = NULL;
 }
 
-void laEntry::set_row(MibTableRow * r, const OctetStr & p0, const OctetStr & p1){
-    r->get_nth(0)->replace_value(new OctetStr(p0));
+void laEntry::set_row(MibTableRow * r, const SnmpInt32 & p0, const OctetStr & p1, const OctetStr & p2){
+    r->get_nth(0)->replace_value(new SnmpInt32(p0));
     r->get_nth(1)->replace_value(new OctetStr(p1));
+    r->get_nth(2)->replace_value(new OctetStr(p2));
 }
 
 MibTableRow * laEntry::add_entry(const OctetStr & ind, const OctetStr & name, const OctetStr & load){
@@ -287,7 +297,6 @@ MibTableRow * laEntry::add_entry(const OctetStr & ind, const OctetStr & name, co
         return r;
     }
     r = add_row(index);
-    set_row(r, name, load);
     end_synch();
     return r;   
 }
