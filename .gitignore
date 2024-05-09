@@ -1,4 +1,3 @@
 *.o
 agent
-snmpv3_boot_counter
-README.md
+./snmpv3_boot_counter
