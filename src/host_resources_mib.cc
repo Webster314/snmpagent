@@ -59,11 +59,33 @@ hrProcessorEntry::hrProcessorEntry() : MibTable(oidHrProcessorEntry, indHrProces
     instance = this;
     add_col(new hrProcessorFrwID(colHrProcessorFrwID));
     add_col(new hrProcessorLoad(colHrProcessorLoad));
-    char buf[16];
-    for(int i = 0; i < 4; i++){
-        sprintf(buf, "%d", i);
-        add_row(buf);
+    FILE * fp; 
+    char line[512];
+    fp = fopen("/proc/cpuinfo", "r");
+    if (fp == NULL) {
+        LOG_BEGIN(loggerModuleName, 1);
+        LOG("HOST_RESOURCES_MIB: /proc/cpuinfo open failed (hrProcessorEntry())");
+        LOG(errno);
+        LOG(strerror(errno));
+        LOG_END;
     }
+    int i = 0;
+    char buf[16];
+    char * key;
+    while(fgets(line, sizeof(line), fp)) {
+        // if ((key = strtok(line, " :\n"))) {
+        //     if (strcmp(key, "processor") == 0) [{
+        //         sprintf(buf, "%d", i++);
+        //         add_row(buf);
+        //     }
+        // }
+        if (strstr(line, "processor") != NULL) {
+            sprintf(buf, "%d", i++);
+            add_row(buf);
+        }
+    }
+    fclose(fp);
+    fp = NULL;
 }
 
 hrProcessorEntry::~hrProcessorEntry(){
