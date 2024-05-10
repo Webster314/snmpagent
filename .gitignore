@@ -2,3 +2,4 @@
 agent
 ./snmpv3_boot_counter
 ./linestat.sh
+./.vscode/
