@@ -170,7 +170,6 @@ hrStorageUsed::hrStorageUsed(const Oidx & o, const OctetStr & m) : MibLeaf(o, RE
 
 void hrStorageUsed::get_request(Request * req, int ind){
     mnt = my_row->get_nth(0)->get_value().get_printable_value();
-    std::cout << mnt.get_printable() << std::endl;
     SnmpInt32 used = get_hr_storage_used();
     set_value(used);
     MibLeaf::get_request(req, ind);
