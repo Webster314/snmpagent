@@ -86,7 +86,7 @@ void init(Mib& mib, const NS_SNMP OctetStr& engineID)
 	sysDescr += AGENTPP_VERSION_STRING;
 	sysDescr += " Agent";
 	mib.add(new sysGroup(sysDescr.get_printable(), "1.3.6.1.4.1.4976", 10, 
-						"neo <jedistipeee@gmail.com", "neo@neo-virtual-machine", "Xi'an Shaanxi"));
+						"neo <jedistipeee@gmail.com>", "neo@neo-virtual-machine", "Xi'an Shaanxi"));
  	mib.add(new snmpGroup());
 	mib.add(new TestAndIncr(oidSnmpSetSerialNo));
 	mib.add(new agentpp_simulation_mib());

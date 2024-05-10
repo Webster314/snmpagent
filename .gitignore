@@ -1,5 +1,5 @@
 *.o
 agent
-./snmpv3_boot_counter
-./linestat.sh
-./.vscode/
+snmpv3_boot_counter
+linestat.sh
+.vscode/
