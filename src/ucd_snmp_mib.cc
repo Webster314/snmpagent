@@ -302,7 +302,10 @@ MibTableRow * laEntry::add_entry(const OctetStr & ind, const OctetStr & name, co
 }
 
 // dskTable
+// dskIndex
+dskIndex::dskIndex(const Oidx & o): MibLeaf(o, READONLY,  new SnmpInt32()){
 
+}
 // dskPath
 dskPath::dskPath(const Oidx & o) : SnmpDisplayString(o, READONLY, new OctetStr()){
 

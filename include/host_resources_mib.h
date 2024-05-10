@@ -17,6 +17,8 @@
 #define oidHrProcessorLoad  "1.3.6.1.2.1.25.3.3.1.2"
 #define colHrProcessorLoad  "2"
 // hrStorageEntry
+#define oidHrStorageDescr   "1.3.6.1.2.1.25.2.3.1.3"
+#define colHrStorageDescr   "3"
 #define oidHrStorageSize    "1.3.6.1.2.1.25.2.3.1.5"
 #define colHrStorageSize    "5"
 #define oidHrStorageUsed    "1.3.6.1.2.1.25.2.3.1.6"
@@ -33,9 +35,11 @@
 // hrStorageTable
 #define oidHrStorageTable   "1.3.6.1.2.1.25.2.3"
 #define oidHrStorageEntry   "1.3.6.1.2.1.25.2.3.1"
-#define nHrStorageSize      3   
+#define nHrStorageDescr     0
+#define cHrStorageDescr     3
+#define nHrStorageSize      1
 #define cHrStorageSize      5
-#define nHrStorageUsed      4
+#define nHrStorageUsed      2
 #define cHrStorageUsed      6
 
 
@@ -98,6 +102,19 @@ public:
 };
 
 // hrStorageTable
+class AGENTPP_DECL hrStorageDescr: public SnmpDisplayString {
+public:
+    hrStorageDescr(const Oidx & o);
+    virtual ~hrStorageDescr() { }
+    virtual MibEntry * clone(){
+        MibEntry * other = new hrStorageDescr(oid);
+        ((hrStorageDescr*)other)->replace_value(value->clone());
+        ((hrStorageDescr*)other)->set_reference_to_table(my_table);
+        return other;
+    };
+    void get_request(Request * req, int ind);
+};
+
 // hrStorageSize
 class AGENTPP_DECL hrStorageSize: public MibLeaf {
 public:
@@ -145,7 +162,7 @@ public:
         hrStorageEntry * entry = (hrStorageEntry*)mib->get(oid);
         return (entry) ? entry : instance;
     }
-    void set_row(MibTableRow * r, const SnmpInt32 &, const SnmpInt32 &);
+    void set_row(MibTableRow * r, const OctetStr &, const SnmpInt32 &, const SnmpInt32 &);
     MibTableRow * add_entry(const OctetStr &, const SnmpInt32 &, const SnmpInt32 &);
 };
 

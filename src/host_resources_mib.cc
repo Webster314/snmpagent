@@ -57,6 +57,7 @@ const index_info  indHrProcessorEntry[1] = {
 hrProcessorEntry::hrProcessorEntry() : MibTable(oidHrProcessorEntry, indHrProcessorEntry, 1) {
     // index : hrProcessorFrwID | HrProcessorLoad
     instance = this;
+    add_col(new hrStorageDescr(colHrStorageDescr));
     add_col(new hrProcessorFrwID(colHrProcessorFrwID));
     add_col(new hrProcessorLoad(colHrProcessorLoad));
     FILE * fp; 
@@ -117,6 +118,16 @@ MibTableRow * hrProcessorEntry::add_entry(const OctetStr & name, const Oidx & fr
     return r;
 }
 
+// hrStoragetTable
+// hrStorageIndex
+hrStorageDescr::hrStorageDescr(const Oidx & o) : SnmpDisplayString(o, READONLY, new OctetStr()){
+
+}
+
+void hrStorageDescr::get_request(Request * req, int ind){
+    MibLeaf::get_request(req, ind);
+}
+
 // hrStorageSize
 hrStorageSize::hrStorageSize(const Oidx & o) : MibLeaf(o, READWRITE, new SnmpInt32()){
 
@@ -127,7 +138,7 @@ hrStorageSize::hrStorageSize(const Oidx & o, const OctetStr & m) : MibLeaf(o, RE
 }
 
 void hrStorageSize::get_request(Request * req, int ind){
-    mnt = "/";
+    mnt = my_row->get_nth(0)->get_value().get_printable_value();
     SnmpInt32 size = get_hr_storage_size();
     set_value(size);
     MibLeaf::get_request(req, ind);
@@ -158,7 +169,8 @@ hrStorageUsed::hrStorageUsed(const Oidx & o, const OctetStr & m) : MibLeaf(o, RE
 }
 
 void hrStorageUsed::get_request(Request * req, int ind){
-    mnt = "/";
+    mnt = my_row->get_nth(0)->get_value().get_printable_value();
+    std::cout << mnt.get_printable() << std::endl;
     SnmpInt32 used = get_hr_storage_used();
     set_value(used);
     MibLeaf::get_request(req, ind);
@@ -188,22 +200,25 @@ const index_info  indHrStorageEntry[1] = {
 
 hrStorageEntry::hrStorageEntry() : MibTable(oidHrStorageEntry, indHrStorageEntry, 1){
     instance = this;
+    add_col(new hrStorageDescr(colHrStorageDescr));
     add_col(new hrStorageSize(colHrStorageSize));
     add_col(new hrStorageUsed(colHrStorageUsed));
+    //
     MibTableRow * r;
     r = add_row("36");
-    set_row(r, 0, 0);
-    r = add_row("82");
-    set_row(r, 0, 0);
+    set_row(r, "/", 0, 0);
+    r = add_row("83");
+    set_row(r, "/boot/efi", 0, 0);
 }
 
 hrStorageEntry::~hrStorageEntry(){
     instance = NULL;
 }
 
-void hrStorageEntry::set_row(MibTableRow * r, const SnmpInt32 & p0, const SnmpInt32 & p1){
-    r->get_nth(0)->replace_value(new SnmpInt32(p0));
+void hrStorageEntry::set_row(MibTableRow * r, const OctetStr & p0, const SnmpInt32 & p1, const SnmpInt32 & p2){
+    r->get_nth(0)->replace_value(new OctetStr(p0));
     r->get_nth(1)->replace_value(new SnmpInt32(p1));
+    r->get_nth(2)->replace_value(new SnmpInt32(p2));
 }
 
 MibTableRow* hrStorageEntry::add_entry(const OctetStr & ind, const SnmpInt32 & size, const SnmpInt32 & used){

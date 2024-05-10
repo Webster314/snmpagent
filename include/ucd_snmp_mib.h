@@ -191,6 +191,18 @@ public:
 };
 
 // dskTable
+// dskIndex
+class AGENTPP_DECL dskIndex: public MibLeaf{
+public:
+    dskIndex(const Oidx &);
+    virtual ~dskIndex() { };
+    virtual MibEntry* clone(){
+        MibEntry * other = new dskIndex(oid);
+        ((dskIndex*)other)->replace_value(value->clone());
+        ((dskIndex*)other)->set_reference_to_table(my_table);
+        return other;
+    }
+};
 
 // dskPath
 class AGENTPP_DECL dskPath: public SnmpDisplayString{
