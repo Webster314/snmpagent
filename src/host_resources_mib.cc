@@ -68,10 +68,11 @@ hrProcessorEntry::hrProcessorEntry() : MibTable(oidHrProcessorEntry, indHrProces
         LOG(errno);
         LOG(strerror(errno));
         LOG_END;
+        return;
     }
     int i = 0;
     char buf[16];
-    char * key;
+    // char * key;
     while(fgets(line, sizeof(line), fp)) {
         // if ((key = strtok(line, " :\n"))) {
         //     if (strcmp(key, "processor") == 0) [{

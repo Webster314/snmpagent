@@ -328,7 +328,7 @@ dskPercentNode::dskPercentNode(const Oidx & o, const OctetStr & m) : MibLeaf(o, 
 
 
 void dskPercentNode::get_request(Request * req, int ind){
-    // SnmpInt32 percent(get_dsk_percent_node(my_row->get_nth(0)->get_value().get_printable_value()));
+    mnt = my_row->get_nth(0)->get_value().get_printable_value();
     SnmpInt32 percent(get_dsk_percent_node());
     set_value(percent);
     MibLeaf::get_request(req, ind);
@@ -345,6 +345,9 @@ long dskPercentNode::get_dsk_percent_node(const char * m){
     }
     long total = fs.f_files;
     long free = fs.f_ffree;
+    if(total == 0){
+        return 0;
+    }
     long freep = (1.0 - ((double)free / (double)total)) * 100;
     long percent = freep;
     return percent;
@@ -361,6 +364,9 @@ long dskPercentNode::get_dsk_percent_node(){
     }
     long total = fs.f_files;
     long free = fs.f_ffree;
+    if(total == 0){
+        return 0;
+    }
     long freep = (1.0 - ((double)free / (double)total)) * 100;
     long percent = freep;
     return percent;
