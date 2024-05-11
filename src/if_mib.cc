@@ -21,7 +21,7 @@ ifHCInOctets::ifHCInOctets(const Oidx & o): MibLeaf(o, READONLY, new Counter64()
 }
 
 void ifHCInOctets::get_request(Request * req, int ind){
-    my_row->get_nth(0)->get_value(itf);
+    itf = my_row->get_nth(0)->get_value().get_printable_value();
     Counter64 in = get_if_hc_in_octets();
     set_value(in);
     MibLeaf::get_request(req, ind);
@@ -38,7 +38,7 @@ ifHCOutOctets::ifHCOutOctets(const Oidx & o): MibLeaf(o, READONLY, new Counter64
 }
 
 void ifHCOutOctets::get_request(Request * req, int ind){
-    my_row->get_nth(0)->get_value(itf);
+    itf = my_row->get_nth(0)->get_value().get_printable_value();
     Counter64 out = get_if_hc_out_octets();
     set_value(out);
     MibLeaf::get_request(req, ind);

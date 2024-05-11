@@ -185,10 +185,12 @@ void memTotalReal::get_request(Request * req, int ind){
 }
 
 // laLoadTable
+
 // laIndex
 laIndex::laIndex(const Oidx & o): MibLeaf(o, READONLY,  new SnmpInt32()){
 
 }
+
 // laName
 laName::laName(const Oidx & o): SnmpDisplayString(o, READONLY, new OctetStr()){
 
@@ -217,7 +219,7 @@ void laLoad::get_request(Request * req, int ind){
     switch(r){
         case 1 : minute = 1; break;
         case 2 : minute = 5; break;
-        case 3 : minute = 15; break;
+        case 3 : minute = 15;break;
     }
     OctetStr load = get_laLoad();
     set_value(load);
