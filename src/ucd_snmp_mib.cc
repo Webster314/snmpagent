@@ -228,7 +228,7 @@ void laLoad::get_request(Request * req, int ind){
 
 OctetStr laLoad::get_laLoad(){
     FILE * fp;
-    char * value = "";
+    char * value;
     char line[128];
     fp = fopen("/proc/loadavg", "r");
     if(fp == NULL){
@@ -237,6 +237,7 @@ OctetStr laLoad::get_laLoad(){
         LOG(errno);
         LOG(strerror(errno));
         LOG_END;
+        return "";
     }
     fgets(line, sizeof(line), fp);
     switch(minute){
@@ -247,7 +248,6 @@ OctetStr laLoad::get_laLoad(){
                 value = strtok(NULL, " \n"); break;
         case 1: value = strtok(line, " \n"); break;
     }
-    // std::cout << OctetStr(value).get_printable();
     fclose(fp);
     fp = NULL;
     return OctetStr(value);
